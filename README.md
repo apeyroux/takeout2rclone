@@ -1,7 +1,7 @@
-# Script to import Google TakeOut to Office365 One 
+# Script to import Google TakeOut to rclone provider
 
-You must install and configure *rclone* and add *one* connector.
+You must install and configure *rclone* and add rclone path.
 
 ``` shell
-TMPDIR=/tmp ./takeout2one.hs /home/alex/bkp/
+TMPDIR=/tmp ./takeout2one.hs /home/alex/bkp/ c14:/Takeout
 ```

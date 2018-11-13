@@ -12,24 +12,24 @@ import           System.Environment
 
 default (T.Text)
 
-pushToOne :: [Shelly.FilePath] -> Sh ()
-pushToOne = mapM_ $ \tgz -> do
+type RclonePath = T.Text
+
+pushToRclone :: RclonePath -> [Shelly.FilePath] -> Sh ()
+pushToRclone rp = mapM_ $ \tgz -> do
   withTmpDir $ \tmpd -> do
                  echo $ "untar " <> toTextIgnore tgz <> " in " <> toTextIgnore tmpd
                  run_ "tar" ["-zxvf", (toTextIgnore tgz), "-C", (toTextIgnore tmpd)]
-                 echo $ "rclone to " <> oneDest
-                 run_ "rclone" ["copy", "-v", "-exclude", "*.json", (toTextIgnore $ tmpd </> "Takeout/"), oneDest]
-  where
-    oneDest = "one:Images/"
+                 echo $ "rclone to " <> rp
+                 -- run_ "rclone" ["copy", "-v", "--exclude", "*.json", (toTextIgnore $ tmpd </> "Takeout/"), rp]
+                 run_ "rclone" ["copy", (toTextIgnore $ tmpd </> "Takeout/"), rp]
 
 main :: IO ()
 main = do
   args <- getArgs
   case args of
-    [] -> usage
-    [takeout] -> do
+    [takeout, rclonep] -> do
       shelly $ silently $ do
-        findWhen (\f -> return $ isInfixOf "takeout-" (T.unpack $ toTextIgnore f)) (fromText $ T.pack takeout) >>= return . sort >>= pushToOne
+        findWhen (\f -> return $ isInfixOf "takeout-" (T.unpack $ toTextIgnore f)) (fromText $ T.pack takeout) >>= return . sort >>= pushToRclone (T.pack rclonep)
     _ -> usage
   where
-    usage = putStrLn "usage: takeout2one [takeout archive directory]"
+    usage = putStrLn "usage: takeout2rclone [takeout archive directory] [rclone path]"
