@@ -15,7 +15,7 @@ default (T.Text)
 pushToOne :: [Shelly.FilePath] -> Sh ()
 pushToOne = mapM_ $ \tgz -> do
   withTmpDir $ \tmpd -> do
-                 echo $ "untar " <> (toTextIgnore tgz) <> " in " <> toTextIgnore tmpd
+                 echo $ "untar " <> toTextIgnore tgz <> " in " <> toTextIgnore tmpd
                  run_ "tar" ["-zxvf", (toTextIgnore tgz), "-C", (toTextIgnore tmpd)]
                  echo $ "rclone to " <> oneDest
                  run_ "rclone" ["copy", "-v", "-exclude", "*.json", (toTextIgnore $ tmpd </> "Takeout/"), oneDest]
