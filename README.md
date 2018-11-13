@@ -3,5 +3,5 @@
 You must install and configure *rclone* and add *one* connector.
 
 ``` shell
-./takeout2one.hs /home/alex/bkp/
+TMPDIR=/tmp ./takeout2one.hs /home/alex/bkp/
 ```
